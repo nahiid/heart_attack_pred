@@ -93,6 +93,7 @@ dataset$target <- factor(dataset$target)
 df<-dataset[dataset$ca!="4" & dataset$thal !="0",]
 df$thal <- factor(dataset2$thal, labels = c("normal","fixed defect","reversable defect"))
 
+#show the cleaned data
 
 # Use the 'glimpse' function from the 'dplyr' package to display a concise summary of the 'df2' dataframe
 glimpse(df2)
@@ -101,3 +102,5 @@ head(df2)
 # Use the 'summary' function to generate a summary of the 'df2' dataframe, which includes measures of central tendency, variability, and other descriptive statistics for each column
 summary(df2)
 
+# Number of observations reduced to 296 from 303
+# 9 variables converted to factors, 5 remain numeric
