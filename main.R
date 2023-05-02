@@ -33,7 +33,7 @@ PlotXTabs(da, sex, target)
 
 ########### Nahid
 
-library(tidyverse) #Reading libraries
+#Reading libraries
 library(caret)
 library(naniar)
 library(mltools)
@@ -95,12 +95,40 @@ df$thal <- factor(dataset2$thal, labels = c("normal","fixed defect","reversable 
 
 #show the cleaned data
 
-# Use the 'glimpse' function from the 'dplyr' package to display a concise summary of the 'df2' dataframe
-glimpse(df2)
-# Use the 'head' function to display the first few rows of the 'df2' dataframe
-head(df2)
-# Use the 'summary' function to generate a summary of the 'df2' dataframe, which includes measures of central tendency, variability, and other descriptive statistics for each column
-summary(df2)
-
+# Use the 'glimpse' function from the 'dplyr' package to display a concise summary of the 'df' dataframe
+glimpse(df)
+# Use the 'head' function to display the first few rows of the 'df' dataframe
+head(df)
+# Use the 'summary' function to generate a summary of the 'df' dataframe, which includes measures of central tendency, variability, and other descriptive statistics for each column
+summary(df)
 # Number of observations reduced to 296 from 303
 # 9 variables converted to factors, 5 remain numeric
+
+# Although it is evident that certain variables will be crucial for the model, it is still necessary to evaluate the importance of each variable using statistical tests. 
+# This will help to ensure that only the most relevant variables are included in the model, 
+# thereby improving its accuracy and reducing overfitting.
+
+library(tidyverse)
+library(rstatix)
+
+# create a data frame with v-cramer factor values for categorical variables
+data.frame(value = apply(df[,c(2,3,6,7,9,11,12,13)],2, FUN = function(x) {cramer.v(table(df$target,x))})) %>%
+  
+  # plot the v-cramer values using ggplot2
+  ggplot(aes(x = colnames(df[,c(2,3,6,7,9,11,12,13)]), y=value))+
+  
+  # create a bar plot of v-cramer values
+  geom_col( fill = "green", color ="grey", alpha = 0.6, width = 0.7)+
+  
+  # add plot title and axis labels
+  labs(title ="V-Cramer plot", y = "Value", x ="Variables")+
+  
+  # customize the y-axis scale
+  scale_y_continuous(breaks = seq(0,0.6,0.05))+
+  
+  # customize plot theme
+  theme(plot.background = element_rect(fill = "#fff8ab"), panel.background = element_rect(fill = "#fff8ab"), 
+        legend.background = element_rect(fill = "#fff8ab"), 
+        axis.line = element_line(colour = "#636360"), plot.title = element_text(size =30,hjust =0.5), plot.title.position = "plot", panel.grid.major.x = element_blank(),
+        panel.grid = element_line(colour = "grey"), axis.title.y = element_text(size =28), axis.text = element_text(size =25),
+        axis.title.x = element_text(size =28))
