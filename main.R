@@ -32,6 +32,23 @@ PlotXTabs(da, sex, target)
 
 
 ########### Nahid
+
+library(tidyverse) #Reading libraries
+library(caret)
+library(naniar)
+library(mltools)
+library(questionr)
+library(corrplot)
+library(caTools)
+library(data.table)
+library(mltools)
+library(rpart)
+library(rpart.plot)
+library(plyr)
+options(warn=-1)
+options(repr.plot.width=20, repr.plot.height = 12)
+
+
 # Read in a CSV file named "heart.csv" located in the "data" directory relative to the current working directory
 dataset <- read.csv("./data/heart.csv")
 
