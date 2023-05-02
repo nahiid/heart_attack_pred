@@ -159,3 +159,14 @@ outliers <- function(x)
   return(x) 
 }
 df[,c(1,4,5,8,10)] <- apply(df[,c(1,4,5,8,10)], 2, outliers)
+
+#8 [split data] 
+
+# 80% training set and 20% test set
+set.seed(2023)
+
+#create a vector of row indices for the training data
+train_indices <- createDataPartition(df$target, p = 0.8, list = FALSE)
+#split the data into training and test sets using the indices
+train_set <- df[train_indices, -c(6, 7)]
+test_set <- df[-train_indices, -c(6, 7)]
