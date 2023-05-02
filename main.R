@@ -71,3 +71,11 @@ slope: the slope of the peak exercise ST segment (1 = upsloping, 2 = flat, 3 = d
 ca: the number of major vessels (0-3) colored by fluoroscopy
 thal: a categorical variable indicating the patient's thalassemia status (3 = normal, 6 = fixed defect, 7 = reversable defect)
 """
+# Check for missing values
+vis_miss(dataset) + 
+  ggtitle("Missing values for each variable")+
+  theme(plot.title = element_text(hjust = 0.5, size =30), axis.title.y = element_text(size =25), axis.text = element_text(size =18), 
+        legend.text = element_text(size =20))
+
+# The plot showed that there were no missing values.
+# It seems like a data cleaning and preprocessing step was taken to ensure the quality and integrity of the data before further analysis was done.
