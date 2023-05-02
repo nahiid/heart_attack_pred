@@ -79,3 +79,16 @@ vis_miss(dataset) +
 
 # The plot showed that there were no missing values.
 # It seems like a data cleaning and preprocessing step was taken to ensure the quality and integrity of the data before further analysis was done.
+
+#Lableing data
+dataset <- distinct(dataset)
+dataset$sex <- factor(dataset$sex, labels = c("female","male"))
+dataset$cp <- factor(dataset$cp)
+dataset$restecg <- factor(dataset$restecg)
+dataset$exang <- factor(dataset$exang, labels = c("no","yes"))
+dataset$fbs <- factor(dataset$fbs, labels = c("no","yes"))
+dataset$slope <- factor(dataset$slope)
+dataset$ca <- factor(dataset$ca)
+dataset$target <- factor(dataset$target)
+dataset2 <-dataset[dataset$ca!="4" & dataset$thal !="0",]
+dataset2$thal <- factor(dataset2$thal, labels = c("normal","fixed defect","reversable defect"))
