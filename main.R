@@ -90,5 +90,5 @@ dataset$fbs <- factor(dataset$fbs, labels = c("no","yes"))
 dataset$slope <- factor(dataset$slope)
 dataset$ca <- factor(dataset$ca)
 dataset$target <- factor(dataset$target)
-dataset2 <-dataset[dataset$ca!="4" & dataset$thal !="0",]
-dataset2$thal <- factor(dataset2$thal, labels = c("normal","fixed defect","reversable defect"))
+df<-dataset[dataset$ca!="4" & dataset$thal !="0",]
+df$thal <- factor(dataset2$thal, labels = c("normal","fixed defect","reversable defect"))
