@@ -111,8 +111,8 @@ summary(df)
 
 #6 [Check the importance of variables]
 
-# Although it is evident that certain variables will be crucial for the model, it is still necessary to evaluate the importance of each variable using statistical tests. 
-# This will help to ensure that only the most relevant variables are included in the model, 
+# Although it is evident that certain variables will be crucial for the random_forest_model, it is still necessary to evaluate the importance of each variable using statistical tests. 
+# This will help to ensure that only the most relevant variables are included in the random_forest_model, 
 # thereby improving its accuracy and reducing overfitting.
 
 library(tidyverse)
@@ -170,3 +170,43 @@ train_indices <- createDataPartition(df$target, p = 0.8, list = FALSE)
 #split the data into training and test sets using the indices
 train_set <- df[train_indices, -c(6, 7)]
 test_set <- df[-train_indices, -c(6, 7)]
+
+#9 [Random Forest]
+
+# create a vector of seeds
+seeds <- as.vector(c(1:11), mode = "list")
+
+# set the last seed in the vector to 1
+seeds[[11]] <- 1
+
+# train a random forest model using the 'train' function from the 'caret' package
+random_forest_model <- train(
+  method ="rf", # set the method to random forest
+  train_set[,-12], # set the predictors
+  train_set$target, # set the target variable
+  metric = "Accuracy", # set the evaluation metric
+  trControl = trainControl(method = "repeatedcv", number =10, repeats = 10), # set the cross-validation method
+  seeds=seeds, # set the seeds for the random number generator
+  tuneGrid = expand.grid(.mtry=c(2,3,4,5,8)) # set the hyperparameters to tune
+)
+
+# print the trained model
+random_forest_model
+
+# use the trained model to make predictions on the test set
+predictions2 <- predict(random_forest_model$finalModel, test_set, type = "class")
+
+# print the confusion matrix for the training dataset
+print("training dataset")
+confusionMatrix(train_set$target, predict(random_forest_model$finalModel, train_set, type ="class"))
+
+# print the confusion matrix for the test dataset
+print("test dataset")
+con2 <- confusionMatrix(test_set$target, predictions2)
+con2
+
+# plot the feature importance
+plot(random_forest_model)
+
+# plot the ROC curve and calculate the AUC score
+colAUC(predict(random_forest_model$finalModel, test_set, type = "prob"), test_set$target, plotROC = T)
