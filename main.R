@@ -96,7 +96,7 @@ dataset$slope <- factor(dataset$slope)
 dataset$ca <- factor(dataset$ca)
 dataset$target <- factor(dataset$target)
 df<-dataset[dataset$ca!="4" & dataset$thal !="0",]
-df$thal <- factor(dataset2$thal, labels = c("normal","fixed defect","reversable defect"))
+df$thal <- factor(df$thal, labels = c("normal","fixed defect","reversable defect"))
 
 #5[show the cleaned data]
 
@@ -171,7 +171,7 @@ train_indices <- createDataPartition(df$target, p = 0.8, list = FALSE)
 train_set <- df[train_indices, -c(6, 7)]
 test_set <- df[-train_indices, -c(6, 7)]
 
-#9 [Random Forest]
+#10 [Random Forest]
 
 # create a vector of seeds
 seeds <- as.vector(c(1:11), mode = "list")
@@ -210,3 +210,105 @@ plot(random_forest_model)
 
 # plot the ROC curve and calculate the AUC score
 colAUC(predict(random_forest_model$finalModel, test_set, type = "prob"), test_set$target, plotROC = T)
+
+#11 [ANN]
+ 
+# Load the required libraries
+library(caret)
+library(neuralnet)
+library(nnet)
+
+# Split the dataset into training and testing datasets
+set.seed(123)
+trainIndex <- createDataPartition(df$target, p = 0.7, list = FALSE)
+trainData <- df[trainIndex,]
+testData <- df[-trainIndex,]
+head(trainData)
+
+# Convert factor column to character
+trainData$cp <- as.character(trainData$cp)
+
+# Convert character column to numeric
+trainData$cp <- as.numeric(trainData$cp)
+
+# Convert factor column to character
+trainData$restecg <- as.character(trainData$restecg)
+
+# Convert character column to numeric
+trainData$restecg <- as.numeric(trainData$restecg)
+
+# Convert factor column to character
+trainData$slope <- as.character(trainData$slope)
+
+# Convert character column to numeric
+trainData$slope <- as.numeric(trainData$slope)
+
+# Convert factor column to character
+trainData$ca <- as.character(trainData$ca)
+
+# Convert character column to numeric
+trainData$ca <- as.numeric(trainData$ca)
+
+# Convert factor column to character
+trainData$target <- as.character(trainData$target)
+
+# Convert character column to numeric
+trainData$target <- as.numeric(trainData$target)
+
+library(neuralnet)
+# Create the neural network
+model <- neuralnet(target ~ ï..age + trestbps + chol + thalach + oldpeak , data = trainData, hidden = c(4,2),act.fct = "logistic")
+
+ trainData <- trainData[, !(names(trainData) %in% c("sex", "thal", "exang", "fbs"))]
+# Train the neural network
+model_fit <- train(target ~ ., method = "nnet", data = trainData)
+
+testData <- testData[, !(names(trainData) %in% c("sex", "thal", "exang", "fbs"))]
+
+# Convert factor column to character
+testData$cp <- as.character(testData$cp)
+
+# Convert character column to numeric
+testData$cp <- as.numeric(testData$cp)
+  
+# Convert factor column to character
+testData$restecg <- as.character(testData$restecg)
+
+# Convert character column to numeric
+testData$restecg <- as.numeric(testData$restecg)
+
+# Convert factor column to character
+testData$slope <- as.character(testData$slope)
+
+# Convert character column to numeric
+testData$slope <- as.numeric(testData$slope)
+
+# Convert factor column to character
+testData$ca <- as.character(testData$ca)
+
+# Convert character column to numeric
+testData$ca <- as.numeric(testData$ca)
+
+# Convert factor column to character
+testData$target <- as.character(testData$target)
+
+# Convert character column to numeric
+testData$target <- as.numeric(testData$target)
+
+# Evaluate the neural network model
+predictions <- predict(model_fit, testData)
+
+predictions
+testData$target
+confusionMatrix(predictions, as.factor(testData$target))
+dim(testData$target)
+dim(predictions)
+  
+# Tune the hyperparameters
+tune_grid <- expand.grid(size = 4:8, decay = c(0, 0.1, 0.01, 0.001))
+nnet_fit <- train(target ~ ., method = "nnet", data = trainData, tuneGrid = tune_grid)
+
+# Predict using the model
+newData <- data.frame(ï..age = 50, sex = "male", cp = 1, trestbps = 130, chol = 234, fbs = "false", restecg = 1, thalach = 187, exang = "no", oldpeak = 1.5, slope = 8, ca = 0, thal = "normal")
+predicted <- predict(model_fit, newData)
+predicted
